@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -23,3 +23,19 @@ def get_users():
 # 2. **Automatic Documentation**: FastAPI generates interactive API documentation (using Swagger UI and Redoc) based on the response models defined for each endpoint. This makes it easier for developers to understand the API's expected responses and how to interact with it.
 
 # 3. **Data Filtering**: The response model allows you to filter out sensitive or unnecessary fields from the response. In the provided example, even though the endpoint returns a dictionary containing a password, the `response_model` ensures that only the `name` and `age` fields are included in the final response sent to the client. This helps in maintaining data privacy and security. 
+
+
+# status code and custom response Example:
+
+@app.post("/create_user", status_code= status.HTTP_201_CREATED)
+def create_user():
+    return {"message": "User created successfully"}
+
+# http exception example:
+
+@app.get("/user/{user_id}")
+def get_user(user_id: int):
+    if user_id != 1:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return {"name": "John Doe", "age": 30}
+
